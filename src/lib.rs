@@ -82,7 +82,8 @@ impl Project {
         package_name: &str,
     ) -> Option<&'a cargo_metadata::Package> {
         metadata.packages.iter().find(|package| {
-            package.name.as_ref() == package_name && metadata.workspace_members.contains(&package.id)
+            package.name.as_ref() == package_name
+                && metadata.workspace_members.contains(&package.id)
         })
     }
 
