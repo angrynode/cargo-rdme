@@ -82,7 +82,7 @@ impl Project {
         package_name: &str,
     ) -> Option<&'a cargo_metadata::Package> {
         metadata.packages.iter().find(|package| {
-            package.name == package_name && metadata.workspace_members.contains(&package.id)
+            package.name.as_ref() == package_name && metadata.workspace_members.contains(&package.id)
         })
     }
 
@@ -125,7 +125,7 @@ impl Project {
             .to_path_buf();
 
         Project {
-            package_name: package.name.clone(),
+            package_name: package.name.to_string(),
             manifest_path,
             readme_path: package.readme.as_ref().map(|p| p.clone().into_std_path_buf()),
             lib_path: lib_package.map(|t| t.src_path.clone().into_std_path_buf()),
