@@ -17,7 +17,7 @@ use rustdoc_types::{Enum, ProcMacro, Union};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
-const EXPECTED_RUSTDOC_FORMAT_VERSION: u32 = 56;
+const EXPECTED_RUSTDOC_FORMAT_VERSION: u32 = 55;
 
 fn crate_from_file(path: &Path) -> Result<Crate, IntralinkError> {
     let json = std::fs::read_to_string(path)
@@ -506,12 +506,20 @@ fn run_rustdoc(
 
     let rustdoc_crate = crate_from_file(&rustdoc_json_path)?;
 
-    match rustdoc_crate.format_version {
-        EXPECTED_RUSTDOC_FORMAT_VERSION => Ok(rustdoc_crate),
-        format_version => Err(IntralinkError::UnsupportedRustdocFormatVersion {
-            version: format_version,
-            expected_version: EXPECTED_RUSTDOC_FORMAT_VERSION,
-        }),
+    if rustdoc_crate.format_version > EXPECTED_RUSTDOC_FORMAT_VERSION {
+        eprintln!(
+            "Warning: Unknown newer rustdoc version {}. Trying to run anyway.",
+            rustdoc_crate.format_version
+        );
+        Ok(rustdoc_crate)
+    } else {
+        match rustdoc_crate.format_version {
+            EXPECTED_RUSTDOC_FORMAT_VERSION => Ok(rustdoc_crate),
+            format_version => Err(IntralinkError::UnsupportedRustdocFormatVersion {
+                version: format_version,
+                expected_version: EXPECTED_RUSTDOC_FORMAT_VERSION,
+            }),
+        }
     }
 }
 
