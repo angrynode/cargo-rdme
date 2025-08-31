@@ -17,7 +17,7 @@ use rustdoc_types::{Enum, ProcMacro, Union};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
-const EXPECTED_RUSTDOC_FORMAT_VERSION: u32 = 55;
+const EXPECTED_RUSTDOC_FORMAT_VERSION: u32 = 56;
 
 fn crate_from_file(path: &Path) -> Result<Crate, IntralinkError> {
     let json = std::fs::read_to_string(path)
